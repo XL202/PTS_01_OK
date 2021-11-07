@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class testing {
     public static void main(String[] args) {
-        Game game = new Game(0,0,0,0,0,0,0,0);
+        Game game = new Game(1,1,1,1,1,1,1,1,3, true);
         Scanner sc = new Scanner(System.in);
         String command;
         while (game.getGameStatus()) {
@@ -22,7 +22,7 @@ public class testing {
                 }
                 case "B" -> {
                     try {
-                        game.buyCards(sc.nextInt());
+                        game.buyCard(sc.nextInt());
                     }
                     catch (InputMismatchException e) {
                         System.err.println("Nebol zadaný argument typu INTEGER!");

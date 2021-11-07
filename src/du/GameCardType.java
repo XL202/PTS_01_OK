@@ -1,15 +1,15 @@
 package du;
 
 public class GameCardType {
-    int plusActions;
-    int plusBuys;
-    int plusCards;
-    int plusCoins;
-    int points;
-    int cost;
-    boolean isAction;
-    String name;
-    String description;
+    private int plusActions;
+    private int plusBuys;
+    private int plusCards;
+    private int plusCoins;
+    private int points;
+    private int cost;
+    private boolean isAction;
+    private String name;
+    private String description;
     
     public GameCardType(int plusActions, int plusBuys, int plusCards, int plusCoins, int points, int cost, boolean isAction, String name, String description) {
         this.plusActions = plusActions;
@@ -28,6 +28,7 @@ public class GameCardType {
     public int getPlusCards() {return plusCards;}
     public int getPlusCoins() {return plusCoins;}
     public int getPoints() {return points;}
+    public int getCost() {return cost;}
     public boolean isAction() {return isAction;}
     public String getName() {return name;}
     public String getDescription() {return description;}
@@ -39,6 +40,7 @@ public class GameCardType {
     public static final GameCardType GAME_CARD_TYPE_VILLAGE = new GameCardType(2, 0, 1, 0, 0, 3, true, "Village", "+2 Actions; +1 Card");
     public static final GameCardType GAME_CARD_TYPE_FESTIVAL = new GameCardType(2, 1, 0, 2, 0, 5, true, "Festival", "+2 Actions; +1 Buy; +2 Coins");
     public static final GameCardType GAME_CARD_TYPE_LABORATORY = new GameCardType(1, 0, 2, 0, 0, 5, true, "Laboratory", "+1 Action; +2 Cards");
+    public static final GameCardType GAME_CARD_TYPE_PROVINCE = new GameCardType(0, 0, 0, 0, 6, 8, false, "Province", "+1 Action; +2 Cards");
 
 }
 

@@ -22,12 +22,12 @@ public class BuyDeck {
         return gct;
     }
     public int getCostOfCard() {
-        return gct.cost;
+        return gct.getCost();
     }
     public String getCardName() {
-        return gct.name;
+        return gct.getName();
     }
     public String getDescription() {
-        return gct.description;
+        return gct.getDescription();
     }
 }

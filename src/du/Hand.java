@@ -10,7 +10,7 @@ public class Hand {
         for(int i = 0; i < 5; i++) cards.add(a.get(i));
     }
     public boolean isActionCard(int idx) {
-        return cards.get(idx).cardType().isAction;
+        return cards.get(idx).cardType().isAction();
     }
 
     public Optional<CardInterface> getTopHandCard() {
@@ -35,5 +35,14 @@ public class Hand {
         cards = new LinkedList<>();
         //for(int i=0; i<cards.size(); i++) tmp.add(cards.remove(0));
         return tmp;
+    }
+    public GameCardType getCard(int i) {
+        return cards.get(i).cardType();
+    }
+    public int getSize() {
+        return cards.size();
+    }
+    public CardInterface removeCard(int i) {
+        return cards.remove(i);
     }
 }

@@ -3,10 +3,10 @@ package du;
 import java.util.LinkedList;
 
 public class AtLeastNEmptyDecks implements EndGameStrategy {
-    int a;
-    LinkedList<BuyDeck> bd;
-    public AtLeastNEmptyDecks(int a, LinkedList<BuyDeck> bd) {
-        this.a = a;
+    private int count;
+    private LinkedList<BuyDeck> bd;
+    public AtLeastNEmptyDecks(int count, LinkedList<BuyDeck> bd) {
+        this.count = count;
         this.bd = new LinkedList<>(bd);
     }
 
@@ -15,13 +15,12 @@ public class AtLeastNEmptyDecks implements EndGameStrategy {
         int tmp = 0;
 
         for(int i=0; i<bd.size(); i++) {
-            //card 1 is estate
-            if (bd.get(1).cardCount() == 0) return true;
+            //card 7 is province
+            if (bd.get(7).cardCount() == 0) return true;
             if (bd.get(i).cardCount() == 0) tmp++;
-
         }
 
-        if (tmp < a) return true;
+        if (tmp >= count) return true;
         return false;
     }
 }

@@ -12,8 +12,8 @@ public class GameCard implements CardInterface {
         this.ts.setCoins(ts.getCoins() + g.getPlusCoins());
         this.ts.setActions(ts.getActions() + g.getPlusActions());
         this.ts.setBuys(ts.getBuys() + g.getPlusBuys());
-        System.out.printf("*** [Card <%s> played: C +%d, A +%d, B +%d, Cards +%d.] ***\n", g.name, g.plusCoins, g.plusActions, g.plusBuys, g.plusCards);
-        return g.plusCards;
+        System.out.printf("*** [Card <%s> played: C +%d, A +%d, B +%d, Cards +%d.] ***\n", g.getName(), g.getPlusCoins(), g.getPlusActions(), g.getPlusBuys(), g.getPlusCards());
+        return g.getPlusCards();
     }
 
     @Override

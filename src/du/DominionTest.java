@@ -28,24 +28,24 @@ class FakeCard implements CardInterface {
 
 public class DominionTest  {
     //*****************DiscardPileTest*********************//
-    private DiscardPile pile1;
-    private DiscardPile pile2;
+    private DiscardPileWithShuffling pile1;
+    private DiscardPileWithShuffling pile2;
 
-    private void assertTopDiscardPileIs(DiscardPile pile, String string) {
+    private void assertTopDiscardPileIs(DiscardPileWithShuffling pile, String string) {
         assertTrue(pile.getTopCard().isPresent());
         assertEquals(pile.getTopCard().get().cardType().getName(), string);
     }
         
-    private void assertTopDiscardPileIsNone(DiscardPile  pile) {
+    private void assertTopDiscardPileIsNone(DiscardPileWithShuffling pile) {
         assertTrue(pile.getTopCard().isEmpty());
     }
 
     void setUpDiscardPile() {
-        pile1 = new DiscardPile(new LinkedList<CardInterface>() {{
+        pile1 = new DiscardPileWithShuffling(new LinkedList<CardInterface>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
         }});
-        pile2 = new DiscardPile(new LinkedList<CardInterface>());
+        pile2 = new DiscardPileWithShuffling(new LinkedList<CardInterface>());
     }
     
     @Test
@@ -144,10 +144,10 @@ public class DominionTest  {
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
         }}, null);
         hand2 = new Hand(deck);
-        hand1.cards.removeLast();
-        hand1.cards.removeLast();
-        hand1.cards.removeLast();
-        hand2.cards.clear();
+        hand1.removeCard(hand1.getSize()-1);
+        hand1.removeCard(hand1.getSize()-1);
+        hand1.removeCard(hand1.getSize()-1);
+        hand2.removeCard(hand2.getSize()-1);
     }
 
     @Test
@@ -188,7 +188,7 @@ public class DominionTest  {
     void setUpPlay() {
         play1 = new Play();
         play2 = new Play();
-        play1.a.add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
+        play1.playPile().add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
     }
 
     @Test
@@ -202,12 +202,12 @@ public class DominionTest  {
     public void test_add_cards_and_get_size_Play() {
         setUpPlay();
         assertEquals(play2.getPlaySize(), 0);
-        play2.a.addAll(new ArrayList<CardInterface>() {{
+        play2.playPile().addAll(new ArrayList<CardInterface>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
         }});
         assertEquals(play2.getPlaySize(), 1);
         assertTopPlayIs(play2, "Copper");
-        play2.a.addAll(new ArrayList<CardInterface>() {{
+        play2.playPile().addAll(new ArrayList<CardInterface>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_LABORATORY));
         }});
         assertEquals(play2.getPlaySize(), 2);
@@ -218,7 +218,7 @@ public class DominionTest  {
 
     private TurnStatus ts;
     int turnNumber = 1;
-    private DiscardPile discardPile;
+    private DiscardPileWithShuffling discardPile;
     private Deck deck;
     private Hand hand;
     private Play play;
@@ -241,7 +241,7 @@ public class DominionTest  {
         tmp.add(new FakeCard(GameCardType.GAME_CARD_TYPE_LABORATORY));
         tmp.add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
         //do disard pile sa dajú 3 karty (C, L, E)
-        discardPile = new DiscardPile(tmp);
+        discardPile = new DiscardPileWithShuffling(tmp);
 
         tmp.add(new FakeCard(GameCardType.GAME_CARD_TYPE_VILLAGE));
         tmp.add(new FakeCard(GameCardType.GAME_CARD_TYPE_FESTIVAL));
@@ -251,7 +251,7 @@ public class DominionTest  {
         hand = new Hand(deck);
         //v hande sa zoberie z decku 5 kariet
         play = new Play();
-        t = new Turn(ts, null);
+        t = new Turn(ts, null, true);
 
         //hand.drawCards(new FakeCard(GameCardType.GAME_CARD_TYPE_SMITHY));
     }
