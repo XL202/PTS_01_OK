@@ -251,7 +251,7 @@ public class DominionTest  {
         hand = new Hand(deck);
         //v hande sa zoberie z decku 5 kariet
         play = new Play();
-        t = new Turn(hand, deck, discardPile, play, ts,null, null, 0);
+        t = new Turn(ts, null);
 
         //hand.drawCards(new FakeCard(GameCardType.GAME_CARD_TYPE_SMITHY));
     }

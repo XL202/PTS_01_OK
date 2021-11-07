@@ -11,17 +11,16 @@ public class Turn {
     DiscardPile discardPile;
     Play play;
     LinkedList<BuyDeck> bd;
-    LinkedList<GameCardType> gct;
+
     boolean actionPhase = true;
     boolean buyPhase = false;
-    public Turn(Hand h, Deck d, DiscardPile dp, Play p, TurnStatus ts, LinkedList<BuyDeck> bd, LinkedList<GameCardType> gct, int empty_Buy_Decks_to_end_game) {
+    public Turn(TurnStatus ts, LinkedList<BuyDeck> bd) {
         this.empty_Buy_Decks_to_end_game = empty_Buy_Decks_to_end_game;
-        this.gct = gct;
-        this.bd = new LinkedList<>(bd);
-        hand = h;
-        deck = d;
-        play = p;
-        discardPile = dp;
+        this.bd = bd;
+        play = new Play();
+        discardPile = new DiscardPile(new LinkedList<>());
+        deck = new Deck(null, discardPile);
+        hand = new Hand(deck);
         this.ts = ts;
         turnNumber = 1;
     }
@@ -159,16 +158,16 @@ public class Turn {
             System.err.printf("Nie je dostatočný počet Buys pre nákup karty.\n");
             return false;
         }
-        if (gct.get(idBuyDeck).cost > ts.getCoins()) {
-            System.err.printf("Nie je dostatočný počet mincí pre nákup karty %s, pretože je potrebných %d a máte len %d. \n", gct.get(idBuyDeck).name, gct.get(idBuyDeck).cost, ts.getCoins());
+        if (bd.get(idBuyDeck).getCostOfCard() > ts.getCoins()) {
+            System.err.printf("Nie je dostatočný počet mincí pre nákup karty %s, pretože je potrebných %d a máte len %d. \n", bd.get(idBuyDeck).getCardName(), bd.get(idBuyDeck).getCostOfCard(), ts.getCoins());
             return false;
         }
         if (bd.get(idBuyDeck).cardCount() > 0) {
             LinkedList<CardInterface> a = new LinkedList<>();
             a.add(bd.get(idBuyDeck).buy());
             discardPile.addCards(a);
-            ts.setCoins(ts.getCoins() - gct.get(idBuyDeck).cost);
-            System.out.printf("Karta %s bola úspešne kúpená za %d coins. Zostatok coins: %d.\n", gct.get(idBuyDeck).name, gct.get(idBuyDeck).cost, ts.getCoins());
+            ts.setCoins(ts.getCoins() - bd.get(idBuyDeck).getCostOfCard());
+            System.out.printf("Karta %s bola úspešne kúpená za %d coins. Zostatok coins: %d.\n", bd.get(idBuyDeck).getCardName(), bd.get(idBuyDeck).getCostOfCard(), ts.getCoins());
             ts.setBuys(ts.getBuys() -1);
             if (ts.getBuys() == 0) {
                 System.out.println("Počet Buys je 0.");
@@ -185,7 +184,7 @@ public class Turn {
         StringBuilder sb = new StringBuilder();
 
         for(int i=0; i<bd.size(); i++) {
-            sb.append(gct.get(i).name + ": ");
+            sb.append(bd.get(i).getCardName() + ": ");
             sb.append(bd.get(i).cardCount() + ", ");
         }
         System.out.printf("BuyDeck: [%s].\n", sb);
@@ -195,9 +194,9 @@ public class Turn {
         StringBuilder sb = new StringBuilder();
 
         for(int i=0; i<bd.size(); i++) {
-            sb.append(gct.get(i).name + ": [");
-            sb.append(bd.get(i).cardCount() + ", " + gct.get(i).cost + " {");
-            sb.append(gct.get(i).description + "}]\n");
+            sb.append(bd.get(i).getCardName() + ": [");
+            sb.append(bd.get(i).cardCount() + ", " + bd.get(i).getCostOfCard() + " {");
+            sb.append(bd.get(i).getDescription() + "}]\n");
         }
         System.out.printf("*** BuyDeck ***\nCard_type: [count in BD, Cost, {Description}]\n%s", sb);
     }

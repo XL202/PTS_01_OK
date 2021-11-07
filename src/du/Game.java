@@ -3,16 +3,11 @@ package du;
 import java.util.LinkedList;
 
 public class Game {
-    //boolean actionPhase, buyPhase;
-    DiscardPile dp;
-    Deck d;
-    Hand h;
     Turn t;
-    Play p;
     TurnStatus ts;
     LinkedList<BuyDeck> bd;
     LinkedList<GameCardType> gct;
-    int empty_Buy_Decks_to_end_game;
+    AtLeastNEmptyDecks leastDecks;
     boolean ok = true;
 
     public Game(int m, int e, int c, int s, int v, int f, int l, int empty_Buy_Decks_to_end_game) {
@@ -23,15 +18,8 @@ public class Game {
         if (v<5) v = 5;
         if (f<5) f = 5;
         if (l<5) l = 5;
-        if (empty_Buy_Decks_to_end_game < 0 || empty_Buy_Decks_to_end_game > 7) empty_Buy_Decks_to_end_game = 3;
-        this.empty_Buy_Decks_to_end_game = empty_Buy_Decks_to_end_game;
+        if (empty_Buy_Decks_to_end_game < 0 || empty_Buy_Decks_to_end_game > 6) empty_Buy_Decks_to_end_game = 3;
 
-
-
-        p = new Play();
-        dp = new DiscardPile(new LinkedList<>());
-        d = new Deck(null, dp);
-        h = new Hand(d);
         ts = new TurnStatus();
 
         bd = new LinkedList<>();
@@ -44,15 +32,15 @@ public class Game {
         gct.add(GameCardType.GAME_CARD_TYPE_FESTIVAL);
         gct.add(GameCardType.GAME_CARD_TYPE_LABORATORY);
 
-        bd.add(new BuyDeck(gct.get(0), m));
-        bd.add(new BuyDeck(gct.get(1), e));
-        bd.add(new BuyDeck(gct.get(2), c));
-        bd.add(new BuyDeck(gct.get(3), s));
-        bd.add(new BuyDeck(gct.get(4), v));
-        bd.add(new BuyDeck(gct.get(5), f));
-        bd.add(new BuyDeck(gct.get(6), l));
-        t = new Turn(h, d, dp, p, ts, bd, gct, empty_Buy_Decks_to_end_game);
-
+        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_MARKET, m));
+        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_ESTATE, e));
+        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_COPPER, c));
+        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_SMITHY, s));
+        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_VILLAGE, v));
+        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_FESTIVAL, f));
+        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_LABORATORY, l));
+        t = new Turn(ts, bd);
+        leastDecks = new AtLeastNEmptyDecks(empty_Buy_Decks_to_end_game, bd);
         System.out.println("Game starts.");
         System.out.println("Turn 1, action phase.\n-----------");
 
@@ -88,7 +76,6 @@ public class Game {
     public void printBuyDeck() {
         t.printBuyDeck();
     }
-
     public void printBuyDeckDescription() {
         t.printBuyDeckDescription();
     }

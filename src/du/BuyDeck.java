@@ -3,11 +3,13 @@ package du;
 import java.util.LinkedList;
 
 public class BuyDeck {
-    LinkedList<CardInterface> cards;
-    public BuyDeck(GameCardType gc, int count) {
+    private LinkedList<CardInterface> cards;
+    private GameCardType gct;
+    public BuyDeck(GameCardType gct, int count) {
+        this.gct = gct;
         cards = new LinkedList();
         for(int i=0; i<count; i++) {
-            cards.add(new GameCard(gc));
+            cards.add(new GameCard(gct));
         }
     }
     public int cardCount() {
@@ -15,5 +17,17 @@ public class BuyDeck {
     }
     public CardInterface buy() {
         return cards.removeLast();
+    }
+    public GameCardType getGameCardType() {
+        return gct;
+    }
+    public int getCostOfCard() {
+        return gct.cost;
+    }
+    public String getCardName() {
+        return gct.name;
+    }
+    public String getDescription() {
+        return gct.description;
     }
 }
