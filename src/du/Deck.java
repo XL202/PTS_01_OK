@@ -1,6 +1,5 @@
 package du;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Optional;
@@ -21,7 +20,6 @@ public class Deck {
                 this.deck.add(deck.get(i));
             }
         }
-
     }
     public int getDeckSize() {
         return deck.size();

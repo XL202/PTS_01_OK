@@ -40,12 +40,14 @@ public class Game {
 
     }
     public void playCard(int handIdx) {
-        t.playCard(handIdx, actionPhase);
-        if (t.ts.getActions() == 0) {
-            System.out.println("Počet Actions je 0");
-            endPlayCardPhase();
+        if (t.playCard(handIdx, actionPhase)) {
+            if (t.ts.getActions() == 0) {
+                System.out.println("Počet Actions je 0");
+                endPlayCardPhase();
+            }
+            is_Action_phase_possible();
         }
-        is_Action_phase_possible();
+
     }
 
     public boolean nextTurn() {
@@ -76,6 +78,7 @@ public class Game {
             printDiscardPile();
             printHand();
             printPlay();
+            ok = false;
         }
         else {
             ts = new TurnStatus();
@@ -105,10 +108,11 @@ public class Game {
         }
     }
     public void buyCards(int idBuyDeck) {
-        t.buyCards(idBuyDeck, buyPhase);
-        if (t.ts.getBuys() == 0) {
-            System.out.println("Počet Buys je 0.");
-            endPlayCardPhase();
+        if (t.buyCards(idBuyDeck, buyPhase)) {
+            if (t.ts.getBuys() == 0) {
+                System.out.println("Počet Buys je 0.");
+                endPlayCardPhase();
+            }
         }
     }
     public void printBuyDeck() {
@@ -128,5 +132,12 @@ public class Game {
     }
     public void printHand() {
         t.printHand();
+    }
+    public void currentPhase() {
+        if (actionPhase) System.out.printf("Actual phase: Action, Turn %d\n", t.getTurnNumber());
+        if (buyPhase) System.out.printf("Actual phase: Buy, Turn %d\n", t.getTurnNumber());
+    }
+    public boolean getGameStatus() {
+        return ok;
     }
 }

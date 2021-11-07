@@ -36,7 +36,12 @@ public class Turn {
         }
         if (ts.getActions() > 0) {
             if (hand.cards.size() > handIdx && handIdx > -1) {
-                if (hand.isActionCard(handIdx)) evaluate_card(hand.play(handIdx));
+                if (hand.isActionCard(handIdx)) {
+                    evaluate_card(hand.play(handIdx));
+                    play.addCardToPlay(hand.cards.remove(handIdx));
+                    ts.setActions(ts.getActions() - 1);
+                    return true;
+                }
                 else {
                     System.err.println("Zvolená karta nie je ActionCard!");
                     return false;
@@ -46,16 +51,12 @@ public class Turn {
                 System.err.println("Zvolená karta nie je v ruke!");
                 return false;
             }
-            play.addCardToPlay(hand.cards.remove(handIdx));
-            ts.setActions(ts.getActions() - 1);
+
 
         }
         else System.err.println("Nedostatok akcii!");
-        return true;
+        return false;
     }
-
-
-
 
     public void throwCardsToDiscardPile() {
         discardPile.addCards(hand.throwCards());
@@ -117,6 +118,7 @@ public class Turn {
     public void printBuyDeckDescription() {
         StringBuilder sb = new StringBuilder();
         for(int i=0; i<bd.size(); i++) {
+            sb.append("[" + i + "]:");
             sb.append(bd.get(i).getCardName() + ": [");
             sb.append(bd.get(i).cardCount() + ", " + bd.get(i).getCostOfCard() + " {");
             sb.append(bd.get(i).getDescription() + "}]\n");

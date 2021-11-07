@@ -6,9 +6,6 @@ public class GameCard implements CardInterface {
     public GameCard(GameCardType g) {
         this.g = g;
     }
-    public TurnStatus returnNewTurnStatus() {
-        return ts;
-    }
     @Override
     public int evaluate(TurnStatus ts) {
         this.ts = ts;
