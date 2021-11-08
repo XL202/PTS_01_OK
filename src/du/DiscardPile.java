@@ -9,6 +9,5 @@ public interface DiscardPile {
     void addCards(List<CardInterface> cards);
     int getSize();
     LinkedList<CardInterface> shuffle();
-    LinkedList<CardInterface> get_dp();
     GameCardType getCard(int i);
 }

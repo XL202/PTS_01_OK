@@ -3,10 +3,10 @@ package du;
 import java.util.LinkedList;
 
 public class Turn {
-    TurnStatus ts;
+    private TurnStatus ts;
     int turnNumber;
-    Hand hand;
-    Deck deck;
+    final private Hand hand;
+    private final Deck deck;
     DiscardPile discardPile;
     Play play;
     LinkedList<BuyDeck> bd;
@@ -15,26 +15,31 @@ public class Turn {
         play = new Play();
         if (shuffling) discardPile = new DiscardPileWithShuffling(new LinkedList<>());
         else discardPile = new DiscardPileWithoutShuffling(new LinkedList<>());
-        deck = new Deck(null, discardPile);
+        if (shuffling) deck = new DeckWithShuffling(null, discardPile);
+        else deck = new DeckWithoutShuffling(null, discardPile);
         hand = new Hand(deck);
         this.ts = ts;
         turnNumber = 1;
     }
-    public boolean evaluate_card(CardInterface card) {
+    public void evaluate_card(CardInterface card) {
         int drawCount = card.evaluate(ts);
         hand.drawCards(deck.draw(drawCount));
-        return false;
     }
 
     public int getTurnNumber() {
         return turnNumber;
     }
+    public void resetTurnStatus() {
+        ts = new TurnStatus();
+    }
+    public int getActions() {
+        return ts.getActions();
+    }
+    public int getBuys() {
+        return ts.getBuys();
+    }
+    public boolean playCard(int handIdx) {
 
-    public boolean playCard(int handIdx, boolean actionPhase) {
-        if (!actionPhase) {
-            System.err.println("Nie je možné hrať kartu pokiaľ nie je ActionPhase!");
-            return false;
-        }
         if (ts.getActions() > 0) {
             if (hand.getSize() > handIdx && handIdx > -1) {
                 if (hand.isActionCard(handIdx)) {
@@ -74,18 +79,17 @@ public class Turn {
         }
         return false;
     }
+    public boolean hasMoreActions() {
+        return ts.getActions() > 0;
+    }
+    public boolean buyCards(int idBuyDeck) {
 
-    public boolean buyCards(int idBuyDeck, boolean buyPhase) {
-        if (!buyPhase) {
-            System.err.println("Nie je možné kupovať kartu pokiaľ nie je BuyPhase!");
-            return false;
-        }
         if (idBuyDeck > 7 || idBuyDeck < 0) {
             System.err.println("Takýto buy deck neexistuje.");
             return false;
         }
         if (ts.getBuys() < 1) {
-            System.err.printf("Nie je dostatočný počet Buys pre nákup karty.\n");
+            System.err.print("Nie je dostatočný počet Buys pre nákup karty.\n");
             return false;
         }
         if (bd.get(idBuyDeck).getCostOfCard() > ts.getCoins()) {
@@ -107,11 +111,29 @@ public class Turn {
         }
         return false;
     }
+    public void printFinalStatus() {
+        int points = 0;
+        int cards = 0;
+        for(int i=0; i<discardPile.getSize(); i++) {
+            points += discardPile.getCard(i).getPoints();
+            cards++;
+        }
+        for(int i=0; i<deck.getDeckSize(); i++) {
+            points += deck.getCard(i).getPoints();
+            cards++;
+        }
+        System.out.println("======================\n***** Game over *****");
+        System.out.printf("Počet kariet: %d\n", cards);
+        System.out.printf("Počet bodov v Decku a DiscardPile: %d\n", points);
+        printBuyDeck();
+        printDeck();
+        printDiscardPile();
+    }
     public void printBuyDeck() {
         StringBuilder sb = new StringBuilder();
-        for(int i=0; i<bd.size(); i++) {
-            sb.append(bd.get(i).getCardName() + ": ");
-            sb.append(bd.get(i).cardCount() + ", ");
+        for (BuyDeck buyDeck : bd) {
+            sb.append(buyDeck.getCardName()).append(": ");
+            sb.append(buyDeck.cardCount()).append(", ");
         }
         System.out.printf("BuyDeck: [%s].\n", sb);
     }
@@ -119,17 +141,17 @@ public class Turn {
     public void printBuyDeckDescription() {
         StringBuilder sb = new StringBuilder();
         for(int i=0; i<bd.size(); i++) {
-            sb.append("[" + i + "]: ");
-            sb.append(bd.get(i).getCardName() + ": [");
-            sb.append(bd.get(i).cardCount() + ", " + bd.get(i).getCostOfCard() + " {");
-            sb.append(bd.get(i).getDescription() + "}]\n");
+            sb.append("[").append(i).append("]: ");
+            sb.append(bd.get(i).getCardName()).append(": [");
+            sb.append(bd.get(i).cardCount()).append(", ").append(bd.get(i).getCostOfCard()).append(" coins, {");
+            sb.append(bd.get(i).getDescription()).append("}]\n");
         }
         System.out.printf("*** BuyDeck ***\nCard_type: [count in BD, Cost, {Description}]\n%s", sb);
     }
     public void printPlay() {
         StringBuilder sb = new StringBuilder();
         for(int i=0; i<play.playPile().size(); i++) {
-            sb.append(play.playPile().get(i).cardType().getName() + " ");
+            sb.append(play.playPile().get(i).cardType().getName()).append(" ");
         }
         System.out.printf("PlayPile: [%s].\n", sb);
     }
@@ -137,7 +159,7 @@ public class Turn {
         StringBuilder sb = new StringBuilder();
 
         for(int i=0; i<deck.getDeckSize(); i++) {
-            sb.append(deck.getCard(i).getName() + " ");
+            sb.append(deck.getCard(i).getName()).append(" ");
         }
         System.out.printf("Deck: [%s].\n", sb);
     }
@@ -145,7 +167,7 @@ public class Turn {
         StringBuilder sb = new StringBuilder();
 
         for(int i=0; i<discardPile.getSize(); i++) {
-            sb.append(discardPile.getCard(i).getName() + " ");
+            sb.append(discardPile.getCard(i).getName()).append(" ");
         }
         System.out.printf("Discard Pile: [%s].\n", sb);
     }
@@ -153,9 +175,9 @@ public class Turn {
         StringBuilder sb = new StringBuilder();
 
         for(int i=0; i<hand.getHand().size(); i++) {
-            sb.append(hand.getHand().get(i).cardType().getName() + " ");
+            sb.append(hand.getHand().get(i).cardType().getName()).append(" ");
         }
-        System.out.printf("A: %d, B: %d, C: %d, Hand: [%s].\n", ts.getActions(), ts.getBuys(), ts.getCoins(), sb.toString());
+        System.out.printf("A: %d, B: %d, C: %d, Hand: [%s].\n", ts.getActions(), ts.getBuys(), ts.getCoins(), sb);
     }
     public void playTreasureCards() {
         int tmp = hand.getHand().size();

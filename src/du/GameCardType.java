@@ -1,15 +1,15 @@
 package du;
 
 public class GameCardType {
-    private int plusActions;
-    private int plusBuys;
-    private int plusCards;
-    private int plusCoins;
-    private int points;
-    private int cost;
-    private boolean isAction;
-    private String name;
-    private String description;
+    private final int plusActions;
+    private final int plusBuys;
+    private final int plusCards;
+    private final int plusCoins;
+    private final int points;
+    private final int cost;
+    private final boolean isAction;
+    private final String name;
+    private final String description;
     
     public GameCardType(int plusActions, int plusBuys, int plusCards, int plusCoins, int points, int cost, boolean isAction, String name, String description) {
         this.plusActions = plusActions;

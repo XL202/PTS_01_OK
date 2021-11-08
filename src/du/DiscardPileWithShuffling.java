@@ -5,7 +5,7 @@ import java.util.*;
 public class DiscardPileWithShuffling implements DiscardPile{
     LinkedList<CardInterface> cards = new LinkedList<>();
     public DiscardPileWithShuffling(LinkedList<CardInterface> cards) {
-        for(int i=0; i<cards.size(); i++) this.cards.add(cards.get(i));
+        this.cards.addAll(cards);
     }
     @Override
     public Optional<CardInterface> getTopCard() {
@@ -24,12 +24,8 @@ public class DiscardPileWithShuffling implements DiscardPile{
     public LinkedList<CardInterface> shuffle() {
         Collections.shuffle(cards);
         LinkedList<CardInterface> cards_to_send = cards;
-        cards = new LinkedList<CardInterface>();
+        cards = new LinkedList<>();
         return cards_to_send;
-    }
-    @Override
-    public LinkedList<CardInterface> get_dp() {
-        return cards;
     }
     @Override
     public GameCardType getCard(int i) {

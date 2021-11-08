@@ -36,9 +36,7 @@ public class Hand {
         //for(int i=0; i<cards.size(); i++) tmp.add(cards.remove(0));
         return tmp;
     }
-    public GameCardType getCard(int i) {
-        return cards.get(i).cardType();
-    }
+
     public int getSize() {
         return cards.size();
     }

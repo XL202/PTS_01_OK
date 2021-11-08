@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 
 public class Play {
-    LinkedList<CardInterface> cards = new LinkedList();
+    LinkedList<CardInterface> cards = new LinkedList<>();
     public Play(){
 
     }

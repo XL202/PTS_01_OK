@@ -3,11 +3,11 @@ package du;
 import java.util.LinkedList;
 
 public class BuyDeck {
-    private LinkedList<CardInterface> cards;
-    private GameCardType gct;
+    private final LinkedList<CardInterface> cards;
+    private final GameCardType gct;
     public BuyDeck(GameCardType gct, int count) {
         this.gct = gct;
-        cards = new LinkedList();
+        cards = new LinkedList<>();
         for(int i=0; i<count; i++) {
             cards.add(new GameCard(gct));
         }

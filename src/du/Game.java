@@ -3,10 +3,9 @@ package du;
 import java.util.LinkedList;
 
 public class Game {
-    private Turn t;
+    private final Turn t;
     private TurnStatus ts;
-    private LinkedList<BuyDeck> bd;
-    private AtLeastNEmptyDecks leastDecks;
+    private final AtLeastNEmptyDecks leastDecks;
     private boolean ok = true;
     private boolean actionPhase;
     private boolean buyPhase;
@@ -21,7 +20,7 @@ public class Game {
         if (l<1) l = 5;
         if (empty_Buy_Decks_to_end_game < 0 || empty_Buy_Decks_to_end_game > 6) empty_Buy_Decks_to_end_game = 3;
         ts = new TurnStatus();
-        bd = new LinkedList<>();
+        LinkedList<BuyDeck> bd = new LinkedList<>();
         bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_MARKET, m));
         bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_ESTATE, e));
         bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_COPPER, c));
@@ -41,8 +40,12 @@ public class Game {
 
     }
     public void playCard(int handIdx) {
-        if (t.playCard(handIdx, actionPhase)) {
-            if (t.ts.getActions() == 0) {
+        if (!actionPhase) {
+            System.err.println("Nie je možné hrať kartu pokiaľ nie je ActionPhase!");
+            return;
+        }
+        if (t.playCard(handIdx)) {
+            if (t.getActions() == 0) {
                 System.out.println("Počet Actions je 0");
                 endPlayCardPhase();
             }
@@ -53,37 +56,18 @@ public class Game {
     private boolean nextTurn() {
         if (leastDecks.isGameOver()) return false;
         t.turnNumber++;
-        t.ts = new TurnStatus();
+        t.resetTurnStatus();
         return true;
     }
     private void endGame() {
         t.throwCardsToDiscardPile();
-
         if (!nextTurn()) {
-            int points = 0;
-            int cards = 0;
-            for(int i=0; i<t.discardPile.getSize(); i++) {
-                points += t.discardPile.getCard(i).getPoints();
-                cards++;
-            }
-            for(int i=0; i<t.deck.getDeckSize(); i++) {
-                points += t.deck.getCard(i).getPoints();
-                cards++;
-            }
-            System.out.println("======================\n***** Game over *****");
-            System.out.printf("Počet kariet: %d\n", cards);
-            System.out.printf("Počet bodov v Decku a DiscardPile: %d\n", points);
-            printBuyDeck();
-            printDeck();
-            printDiscardPile();
-            //printHand();
-            //printPlay();
+            t.printFinalStatus();
             ok = false;
         }
         else {
             ts = new TurnStatus();
             t.drawCardsFromDeck(5);
-
             System.out.printf("============\nNext turn: Turn %d, action phase.\n", t.getTurnNumber());
             is_Action_phase_possible();
         }
@@ -102,14 +86,24 @@ public class Game {
     }
 
     private void is_Action_phase_possible() {
+        if (!t.hasMoreActions()) {
+            System.out.println("Počet akcii je 0.");
+            endPlayCardPhase();
+            return;
+        }
+
         if (!t.is_Action_phase_possible()) {
             System.out.println("***V Hand nie sú žiadne action cards!***");
             endPlayCardPhase();
         }
     }
     public void buyCard(int idBuyDeck) {
-        if (t.buyCards(idBuyDeck, buyPhase)) {
-            if (t.ts.getBuys() == 0) {
+        if (!buyPhase) {
+            System.err.println("Nie je možné kupovať kartu pokiaľ nie je BuyPhase!");
+            return;
+        }
+        if (t.buyCards(idBuyDeck)) {
+            if (t.getBuys() == 0) {
                 System.out.println("Počet Buys je 0.");
                 endPlayCardPhase();
             }

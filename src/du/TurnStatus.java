@@ -18,9 +18,6 @@ public class TurnStatus {
     public void setBuys(int buys) {
         this.buys = buys;
     }
-    public void addBuys(int buys) {
-        this.buys += buys;
-    }
 
     public int getActions() {
         return actions;
@@ -29,16 +26,11 @@ public class TurnStatus {
     public void setActions(int actions) {
         this.actions = actions;
     }
-    public void addActions(int actions) {
-        this.actions += actions;
-    }
 
     public void setCoins(int coins) {
         this.coins = coins;
     }
-    public void addCoins(int coins) {
-        this.coins += coins;
-    }
+
     public int getCoins() {
         return coins;
     }
@@ -65,8 +57,6 @@ public class TurnStatus {
             return false;
         if (buys != other.buys)
             return false;
-        if (coins != other.coins)
-            return false;
-        return true;
+        return coins == other.coins;
     }
 }

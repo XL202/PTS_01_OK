@@ -9,24 +9,26 @@ import static org.junit.Assert.assertTrue;
 
 
 class FakeCard implements CardInterface {
-    private GameCardType cardType;
-    
+    private final GameCardType cardType;
+
     FakeCard(GameCardType cardType) {
         this.cardType = cardType;
     }
-    
-    public int evaluate(TurnStatus t) {
-        return 0;
+
+    public int evaluate(TurnStatus ts) {
+        ts.setCoins(ts.getCoins() + cardType.getPlusCoins());
+        ts.setActions(ts.getActions() + cardType.getPlusActions());
+        ts.setBuys(ts.getBuys() + cardType.getPlusBuys());
+        return cardType.getPlusCards();
     }
 
     public GameCardType cardType() {
-    	return cardType;
+        return cardType;
     }
-    public TurnStatus getTurnStatus() {return new TurnStatus();}
 }
 
 
-public class DominionTest  {
+public class DominionTesting  {
     //*****************DiscardPileTest*********************//
     private DiscardPileWithShuffling pile1;
     private DiscardPileWithShuffling pile2;
@@ -35,60 +37,60 @@ public class DominionTest  {
         assertTrue(pile.getTopCard().isPresent());
         assertEquals(pile.getTopCard().get().cardType().getName(), string);
     }
-        
+
     private void assertTopDiscardPileIsNone(DiscardPileWithShuffling pile) {
         assertTrue(pile.getTopCard().isEmpty());
     }
 
     void setUpDiscardPile() {
-        pile1 = new DiscardPileWithShuffling(new LinkedList<CardInterface>() {{
+        pile1 = new DiscardPileWithShuffling(new LinkedList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
         }});
-        pile2 = new DiscardPileWithShuffling(new LinkedList<CardInterface>());
+        pile2 = new DiscardPileWithShuffling(new LinkedList<>());
     }
-    
+
     @Test
     public void test_get_top_card_from_DiscardPile() {
-    	setUpDiscardPile();
+        setUpDiscardPile();
         assertTopDiscardPileIs(pile1, "Copper");
         assertTopDiscardPileIsNone(pile2);
     }
-        
+
     @Test
     public void test_add_cards_and_get_size_DiscardPile() {
-    	setUpDiscardPile();
+        setUpDiscardPile();
         assertEquals(pile2.getSize(), 0);
-        pile2.addCards(new ArrayList<CardInterface>() {{
+        pile2.addCards(new ArrayList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
         }});
         assertEquals(pile2.getSize(), 1);
         assertTopDiscardPileIs(pile2, "Estate");
-        pile2.addCards(new ArrayList<CardInterface>() {{
+        pile2.addCards(new ArrayList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
         }});
         assertEquals(pile2.getSize(), 2);
         assertTopDiscardPileIs(pile2, "Copper");
     }
     //*****************DeckTest*********************//
-    private Deck deck1;
-    private Deck deck2;
+    private DeckWithShuffling deck1;
+    private DeckWithShuffling deck2;
 
-    private void assertTopDeckIs(Deck deck, String string) {
+    private void assertTopDeckIs(DeckWithShuffling deck, String string) {
         assertTrue(deck.getTopDeckCard().isPresent());
         assertEquals(deck.getTopDeckCard().get().cardType().getName(), string);
     }
 
-    private void assertTopDeckIsNone(Deck deck) {
+    private void assertTopDeckIsNone(DeckWithShuffling deck) {
         assertTrue(deck.getTopDeckCard().isEmpty());
     }
 
     void setUpDeck() {
-        deck1 = new Deck(new LinkedList<CardInterface>() {{
+        deck1 = new DeckWithShuffling(new LinkedList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
         }}, null);
-        deck2 = new Deck(null, null);
+        deck2 = new DeckWithShuffling(null, null);
         deck2.deck.clear();
     }
 
@@ -103,12 +105,12 @@ public class DominionTest  {
     public void test_add_cards_and_get_size_Deck() {
         setUpDeck();
         assertEquals(deck2.getDeckSize(), 0);
-        deck2.deck.addAll(new ArrayList<CardInterface>() {{
+        deck2.deck.addAll(new ArrayList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
         }});
         assertEquals(deck2.getDeckSize(), 1);
         assertTopDeckIs(deck2, "Estate");
-        deck2.deck.addAll(new ArrayList<CardInterface>() {{
+        deck2.deck.addAll(new ArrayList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
         }});
         assertEquals(deck2.getDeckSize(), 2);
@@ -128,15 +130,15 @@ public class DominionTest  {
     }
 
     void setUpHand() {
-        Deck deck = new Deck(new LinkedList<CardInterface>() {{
+        DeckWithShuffling deck = new DeckWithShuffling(new LinkedList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
-            add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
+            add(new FakeCard(GameCardType.GAME_CARD_TYPE_LABORATORY));
         }}, null);
         hand1 = new Hand(deck);
-        deck = new Deck(new LinkedList<CardInterface>() {{
+        deck = new DeckWithShuffling(new LinkedList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
@@ -144,16 +146,17 @@ public class DominionTest  {
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
         }}, null);
         hand2 = new Hand(deck);
-        hand1.removeCard(hand1.getSize()-1);
-        hand1.removeCard(hand1.getSize()-1);
-        hand1.removeCard(hand1.getSize()-1);
+        hand2.removeCard(hand2.getSize()-1);
+        hand2.removeCard(hand2.getSize()-1);
+        hand2.removeCard(hand2.getSize()-1);
+        hand2.removeCard(hand2.getSize()-1);
         hand2.removeCard(hand2.getSize()-1);
     }
 
     @Test
     public void test_get_top_card_from_Hand() {
         setUpHand();
-        assertTopHandIs(hand1, "Copper");
+        assertTopHandIs(hand1, "Laboratory");
         assertTopHandIsNone(hand2);
     }
 
@@ -161,12 +164,12 @@ public class DominionTest  {
     public void test_add_cards_and_get_size_Hand() {
         setUpHand();
         assertEquals(hand2.getHandSize(), 0);
-        hand2.getHand().addAll(new ArrayList<CardInterface>() {{
+        hand2.getHand().addAll(new ArrayList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
         }});
         assertEquals(hand2.getHandSize(), 1);
         assertTopHandIs(hand2, "Estate");
-        hand2.cards.addAll(new ArrayList<CardInterface>() {{
+        hand2.cards.addAll(new ArrayList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
         }});
         assertEquals(hand2.getHandSize(), 2);
@@ -202,12 +205,12 @@ public class DominionTest  {
     public void test_add_cards_and_get_size_Play() {
         setUpPlay();
         assertEquals(play2.getPlaySize(), 0);
-        play2.playPile().addAll(new ArrayList<CardInterface>() {{
+        play2.playPile().addAll(new ArrayList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
         }});
         assertEquals(play2.getPlaySize(), 1);
         assertTopPlayIs(play2, "Copper");
-        play2.playPile().addAll(new ArrayList<CardInterface>() {{
+        play2.playPile().addAll(new ArrayList<>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_LABORATORY));
         }});
         assertEquals(play2.getPlaySize(), 2);
@@ -217,21 +220,12 @@ public class DominionTest  {
     //*****************Turn_evaluate_test_draw_cards_add_{A_B_C}*********************//
 
     private TurnStatus ts;
-    int turnNumber = 1;
+    private int turnNumber = 1;
     private DiscardPileWithShuffling discardPile;
-    private Deck deck;
+    private DeckWithShuffling deck;
     private Hand hand;
     private Play play;
     private Turn t;
-
-    /*private void assertTopPlayIs(Play play, String string) {
-        assertTrue(play.getTopPlayCard().isPresent());
-        assertEquals(play.getTopPlayCard().get().cardType().getName(), string);
-    }
-
-    /*private void assertTopPlayIsNone(Play play) {
-        assertTrue(play.getTopPlayCard().isEmpty());
-    }*/
 
     void setUpTurn() {
         ts = new TurnStatus();
@@ -246,7 +240,7 @@ public class DominionTest  {
         tmp.add(new FakeCard(GameCardType.GAME_CARD_TYPE_VILLAGE));
         tmp.add(new FakeCard(GameCardType.GAME_CARD_TYPE_FESTIVAL));
 
-        deck = new Deck(tmp, discardPile);
+        deck = new DeckWithShuffling(tmp, discardPile);
         //do decku sa dá 5 kariet (C, L, E, V, F)
         hand = new Hand(deck);
         //v hande sa zoberie z decku 5 kariet
@@ -303,22 +297,39 @@ public class DominionTest  {
     }
     @Test
     public void test_play_cards_from_hand() {
-        setUpTurn();
-        assertEquals(ts.getCoins(), 0);
-        assertEquals(ts.getBuys(), 1);
-        assertEquals(ts.getActions(), 1);
+        /*setUpTurn();
+        assertEquals(t.getCoins(), 0);
+        assertEquals(t.getBuys(), 1);
+        assertEquals(t.getActions(), 1);
         assertEquals(hand.getHandSize(), 5);
-        assertTopHandIs(hand, "Festival");
-        /*System.out.println(hand.getHand().get(3).cardType().getName());
-        t.evaluate_card(hand.play(3)); //play laboratory +1Card, +2A
-        //
-        assertEquals(ts.getCoins(), 0);
-        assertEquals(ts.getBuys(), 1);
-        assertEquals(ts.getActions(), 1);
+        assertTopDiscardPileIs(discardPile, "Estate");
+        assertTopHandIs(hand, "Festival"); //+2A +1B +2C +0Cards
+        FakeCard c1 = new FakeCard(hand.getCard(4));
+        c1.evaluate(ts);
+        assertEquals(t.getCoins(), 2);
+        assertEquals(t.getBuys(), 2);
+        assertEquals(t.getActions(), 3);
+        discardPile.cards.add(hand.removeCard(4));
+        assertEquals(hand.getHandSize(), 4);
+        assertEquals(discardPile.getSize(),4);
+        assertTopDiscardPileIs(discardPile, "Festival");
+        assertTopHandIs(hand, "Village");
+        assertEquals(t.getCoins(), 2);
+        assertEquals(t.getBuys(), 2);
+        assertEquals(t.getActions(), 3);
+        System.out.println(hand.getCard(1).getName()); // laboratory +1A +0B +0C +2Cards
+        FakeCard c2 = new FakeCard(hand.getCard(1));
+        hand.getHand().addAll(deck.draw(c2.evaluate(ts)));
+        //assertEquals(t.getCoins(), 2);
+        assertEquals(t.getBuys(), 2);
+        assertEquals(t.getActions(), 4);
+        discardPile.cards.add(hand.removeCard(1));
         assertEquals(hand.getHandSize(), 5);
-        assertEquals(discardPile.getSize(),0);
-        assertEquals(deck.getDeckSize(),2);*/
+        assertEquals(discardPile.getSize(),5);*/
+    }
+    @Test
+    public void game_test_with_shuffling() {
+        Game game = new Game(1,1,1,1,1,1,1,1,3,false);
 
     }
-
 }
