@@ -27,7 +27,6 @@ class FakeCard implements CardInterface {
     }
 }
 
-
 public class DominionTesting  {
     //*****************DiscardPileTest*********************//
     private DiscardPile pile1;
