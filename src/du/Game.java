@@ -1,5 +1,7 @@
 package du;
 
+import java.util.LinkedList;
+
 public class Game {
     //všetko by bol private, keby som nerobil testy
     final Turn t;
@@ -10,17 +12,14 @@ public class Game {
     boolean buyPhase;
     //potiaľto private
 
-    public Game(int market, int estate, int copper, int smithy, int village, int festival, int laboratory, int province, int empty_Buy_Decks_to_end_game, boolean shuffling) {
-        if (market<1) market = 5;
-        if (estate<1) estate = 5;
-        if (copper<1) copper = 5;
-        if (smithy<1) smithy = 5;
-        if (village<1) village = 5;
-        if (festival<1) festival = 5;
-        if (laboratory<1) laboratory = 5;
+    public Game(LinkedList<Integer> bdCapacity, int empty_Buy_Decks_to_end_game, boolean shuffling) {
+        for(int i=0; i< bdCapacity.size(); i++) {
+            if (bdCapacity.get(i)<1) bdCapacity.set(i,5);
+        }
+
         if (empty_Buy_Decks_to_end_game < 0 || empty_Buy_Decks_to_end_game > 7) empty_Buy_Decks_to_end_game = 3;
         ts = new TurnStatus();
-        CreateBuyDecks cbd = new CreateBuyDecks(market,estate, copper, smithy, village, festival, laboratory, province);
+        CreateBuyDecks cbd = new CreateBuyDecks(bdCapacity);
 
         t = new Turn(ts, cbd.buyDecks(), shuffling);
         leastDecks = new AtLeastNEmptyDecks(empty_Buy_Decks_to_end_game, cbd.buyDecks());

@@ -318,7 +318,17 @@ public class DominionTesting  {
     }
     @Test
     public void game_test_end_game_by_0_provinces() {
-        Game game = new Game(2,2,2,2,1,2,2,1,3,false);
+        LinkedList<Integer> tmp = new LinkedList<>();
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(1);
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(1);
+
+        Game game = new Game(tmp,3,false);
         //na začiatku sa nedá hrať action phase
         game.t.setCoinsTo8();
         assertTrue(game.buyCard(7));
@@ -329,7 +339,16 @@ public class DominionTesting  {
     }
     @Test
     public void game_test_without_shuffling() {
-        Game game = new Game(2,2,2,2,1,2,2,2,3,false);
+        LinkedList<Integer> tmp = new LinkedList<>();
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(1);
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(2);
+        Game game = new Game(tmp,3,false);
         //na začiatku sa nedá hrať action phase
         assertFalse(game.playCard(5));
         assertFalse(game.buyCard(8));
@@ -410,7 +429,9 @@ public class DominionTesting  {
     }
     @Test
     public void buy_deck_test() {
-        CreateBuyDecks cbd = new CreateBuyDecks(1,2,3,4, 5, 6, 7, 8);
+        LinkedList<Integer> tmp = new LinkedList<>();
+        for(int i=1; i<=8; i++) tmp.add(i);
+        CreateBuyDecks cbd = new CreateBuyDecks(tmp);
         for(int i=0; i<cbd.buyDecks().size(); i++) {
             assertEquals(cbd.buyDecks().get(i).cardCount(), i+1);
         }

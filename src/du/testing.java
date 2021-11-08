@@ -1,11 +1,21 @@
 package du;
 
 import java.util.InputMismatchException;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class testing {
     public static void main(String[] args) {
-        Game game = new Game(1,1,1,1,1,1,1,1,3, true);
+        LinkedList<Integer> tmp = new LinkedList<>();
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(1);
+        tmp.add(2);
+        tmp.add(2);
+        tmp.add(1);
+        Game game = new Game(tmp,3, true);
         Scanner sc = new Scanner(System.in);
         String command;
         boolean cycle = true;
