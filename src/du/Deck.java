@@ -8,4 +8,5 @@ public interface Deck {
     GameCardType getCard(int i);
     Optional<CardInterface> getTopDeckCard();
     LinkedList<CardInterface> draw(int count);
+    LinkedList<CardInterface> deck();
 }

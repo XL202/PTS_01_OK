@@ -46,4 +46,8 @@ public class DeckWithoutShuffling implements Deck{
         }
         return tmp;
     }
+
+    public LinkedList<CardInterface> deck() {
+        return deck;
+    }
 }

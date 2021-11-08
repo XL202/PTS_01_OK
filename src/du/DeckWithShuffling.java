@@ -47,4 +47,8 @@ public class DeckWithShuffling implements Deck {
         }
         return tmp;
     }
+    @Override
+    public LinkedList<CardInterface> deck() {
+        return deck;
+    }
 }
