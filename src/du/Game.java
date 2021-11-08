@@ -10,17 +10,17 @@ public class Game {
     boolean buyPhase;
     //potiaľto private
 
-    public Game(int m, int e, int c, int s, int v, int f, int l, int p, int empty_Buy_Decks_to_end_game, boolean shuffling) {
-        if (m<1) m = 5;
-        if (e<1) e = 5;
-        if (c<1) c = 5;
-        if (s<1) s = 5;
-        if (v<1) v = 5;
-        if (f<1) f = 5;
-        if (l<1) l = 5;
+    public Game(int market, int estate, int copper, int smithy, int village, int festival, int laboratory, int province, int empty_Buy_Decks_to_end_game, boolean shuffling) {
+        if (market<1) market = 5;
+        if (estate<1) estate = 5;
+        if (copper<1) copper = 5;
+        if (smithy<1) smithy = 5;
+        if (village<1) village = 5;
+        if (festival<1) festival = 5;
+        if (laboratory<1) laboratory = 5;
         if (empty_Buy_Decks_to_end_game < 0 || empty_Buy_Decks_to_end_game > 7) empty_Buy_Decks_to_end_game = 3;
         ts = new TurnStatus();
-        CreateBuyDecks cbd = new CreateBuyDecks(m,e, c, s, v, f, l, p);
+        CreateBuyDecks cbd = new CreateBuyDecks(market,estate, copper, smithy, village, festival, laboratory, province);
 
         t = new Turn(ts, cbd.buyDecks(), shuffling);
         leastDecks = new AtLeastNEmptyDecks(empty_Buy_Decks_to_end_game, cbd.buyDecks());
