@@ -152,7 +152,38 @@ public class DominionTesting  {
         hand2.removeCard(hand2.getSize()-1);
         hand2.removeCard(hand2.getSize()-1);
     }
+    @Test
+    public void testEndPhase() {
+        LinkedList<Integer> tmp = new LinkedList<>();
+        for(int i=0; i<8; i++) {
+            tmp.add(1);
+        }
+        CreateBuyDecks cbd = new CreateBuyDecks(tmp);
+        AtLeastNEmptyDecks ad = new AtLeastNEmptyDecks(3, cbd.buyDecks());
+        assertFalse(ad.isGameOver());
 
+        tmp.set(7, 0);
+        CreateBuyDecks cbd1 = new CreateBuyDecks(tmp);
+        AtLeastNEmptyDecks ad1 = new AtLeastNEmptyDecks(3, cbd1.buyDecks());
+        assertTrue(ad1.isGameOver());
+
+        tmp.set(7, 1);
+        tmp.set(3, 0);
+        tmp.set(2, 0);
+        CreateBuyDecks cbd2 = new CreateBuyDecks(tmp);
+        AtLeastNEmptyDecks ad2 = new AtLeastNEmptyDecks(3, cbd2.buyDecks());
+        assertFalse(ad2.isGameOver());
+        tmp.set(4, 0);
+        CreateBuyDecks cbd3 = new CreateBuyDecks(tmp);
+        AtLeastNEmptyDecks ad3 = new AtLeastNEmptyDecks(3, cbd3.buyDecks());
+        assertTrue(ad3.isGameOver());
+        tmp.set(5, 0);
+        CreateBuyDecks cbd4 = new CreateBuyDecks(tmp);
+        AtLeastNEmptyDecks ad4 = new AtLeastNEmptyDecks(3, cbd4.buyDecks());
+        assertTrue(ad4.isGameOver());
+
+
+    }
     @Test
     public void test_get_top_card_from_Hand() {
         setUpHand();
