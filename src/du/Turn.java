@@ -25,7 +25,10 @@ public class Turn {
         int drawCount = card.evaluate(ts);
         hand.drawCards(deck.draw(drawCount));
     }
-
+    public void setCoinsTo8() {
+        //tato funkcia je len pre testovacie účely, bez testovania tu nemá zmysel
+        ts.setCoins(8);
+    }
     public int getTurnNumber() {
         return turnNumber;
     }
@@ -37,6 +40,9 @@ public class Turn {
     }
     public int getBuys() {
         return ts.getBuys();
+    }
+    public int getCoins() {
+        return ts.getCoins();
     }
     public boolean playCard(int handIdx) {
 
@@ -111,6 +117,26 @@ public class Turn {
         }
         return false;
     }
+    public int actualCountOfCard() {
+        //metoda na overenie spravneho poctu kariet - pre testovacie ucely
+
+        return discardPile.getSize() + deck.getDeckSize();
+    }
+    public int actualPoints() {
+        //metoda na overenie spravneho poctu bodov - pre testovacie ucely
+        int points = 0;
+        for(int i=0; i<discardPile.getSize(); i++) {
+            points += discardPile.getCard(i).getPoints();
+
+        }
+        for(int i=0; i<deck.getDeckSize(); i++) {
+            points += deck.getCard(i).getPoints();
+
+        }
+        return points;
+    }
+
+
     public void printFinalStatus() {
         int points = 0;
         int cards = 0;

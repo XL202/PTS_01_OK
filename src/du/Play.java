@@ -27,7 +27,4 @@ public class Play {
     public LinkedList<CardInterface> playPile() {
         return cards;
     }
-    public GameCardType getCard(int i) {
-        return cards.get(i).cardType();
-    }
 }

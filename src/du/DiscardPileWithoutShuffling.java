@@ -23,7 +23,6 @@ public class DiscardPileWithoutShuffling implements DiscardPile {
     }
     @Override
     public LinkedList<CardInterface> shuffle() {
-        Collections.shuffle(cards);
         LinkedList<CardInterface> cards_to_send = cards;
         cards = new LinkedList<>();
         return cards_to_send;

@@ -1,6 +1,5 @@
 package du;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Optional;
 
@@ -13,7 +12,6 @@ public class DeckWithoutShuffling implements Deck{
             this.deck = new LinkedList<>();
             for(int i=0; i<3; i++) this.deck.add(new GameCard(GameCardType.GAME_CARD_TYPE_ESTATE));
             for(int i=0; i<7; i++) this.deck.add(new GameCard(GameCardType.GAME_CARD_TYPE_COPPER));
-            Collections.shuffle(this.deck);
         }
         else {
             this.deck.addAll(deck);

@@ -1,14 +1,14 @@
 package du;
 
-import java.util.LinkedList;
-
 public class Game {
-    private final Turn t;
+    //všetko by bol private, keby som nerobil testy
+    final Turn t;
     private TurnStatus ts;
     private final AtLeastNEmptyDecks leastDecks;
-    private boolean ok = true;
-    private boolean actionPhase;
-    private boolean buyPhase;
+    boolean gameEnded = false;
+    boolean actionPhase;
+    boolean buyPhase;
+    //potiaľto private
 
     public Game(int m, int e, int c, int s, int v, int f, int l, int p, int empty_Buy_Decks_to_end_game, boolean shuffling) {
         if (m<1) m = 5;
@@ -18,19 +18,12 @@ public class Game {
         if (v<1) v = 5;
         if (f<1) f = 5;
         if (l<1) l = 5;
-        if (empty_Buy_Decks_to_end_game < 0 || empty_Buy_Decks_to_end_game > 6) empty_Buy_Decks_to_end_game = 3;
+        if (empty_Buy_Decks_to_end_game < 0 || empty_Buy_Decks_to_end_game > 7) empty_Buy_Decks_to_end_game = 3;
         ts = new TurnStatus();
-        LinkedList<BuyDeck> bd = new LinkedList<>();
-        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_MARKET, m));
-        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_ESTATE, e));
-        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_COPPER, c));
-        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_SMITHY, s));
-        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_VILLAGE, v));
-        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_FESTIVAL, f));
-        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_LABORATORY, l));
-        bd.add(new BuyDeck(GameCardType.GAME_CARD_TYPE_PROVINCE, p));
-        t = new Turn(ts, bd, shuffling);
-        leastDecks = new AtLeastNEmptyDecks(empty_Buy_Decks_to_end_game, bd);
+        CreateBuyDecks cbd = new CreateBuyDecks(m,e, c, s, v, f, l, p);
+
+        t = new Turn(ts, cbd.buyDecks(), shuffling);
+        leastDecks = new AtLeastNEmptyDecks(empty_Buy_Decks_to_end_game, cbd.buyDecks());
         System.out.println("Game starts.");
         System.out.println("Turn 1, action phase.\n-----------");
 
@@ -39,10 +32,14 @@ public class Game {
         is_Action_phase_possible();
 
     }
-    public void playCard(int handIdx) {
+    public boolean playCard(int handIdx) {
+        if (gameEnded) {
+            System.err.println("Hra sa už skončila!");
+            return false;
+        }
         if (!actionPhase) {
             System.err.println("Nie je možné hrať kartu pokiaľ nie je ActionPhase!");
-            return;
+            return false;
         }
         if (t.playCard(handIdx)) {
             if (t.getActions() == 0) {
@@ -50,7 +47,9 @@ public class Game {
                 endPlayCardPhase();
             }
             is_Action_phase_possible();
+            return true;
         }
+        return false;
     }
 
     private boolean nextTurn() {
@@ -63,7 +62,8 @@ public class Game {
         t.throwCardsToDiscardPile();
         if (!nextTurn()) {
             t.printFinalStatus();
-            ok = false;
+            buyPhase = false;
+            gameEnded = true;
         }
         else {
             ts = new TurnStatus();
@@ -73,6 +73,10 @@ public class Game {
         }
     }
     public void endPlayCardPhase() {
+        if (gameEnded) {
+            System.err.println("Hra sa už skončila!");
+            return;
+        }
         if (buyPhase) {
             buyPhase = false;
             actionPhase = true;
@@ -97,17 +101,23 @@ public class Game {
             endPlayCardPhase();
         }
     }
-    public void buyCard(int idBuyDeck) {
+    public boolean buyCard(int idBuyDeck) {
+        if (gameEnded) {
+            System.err.println("Hra sa už skončila!");
+            return false;
+        }
         if (!buyPhase) {
             System.err.println("Nie je možné kupovať kartu pokiaľ nie je BuyPhase!");
-            return;
+            return false;
         }
         if (t.buyCards(idBuyDeck)) {
             if (t.getBuys() == 0) {
                 System.out.println("Počet Buys je 0.");
                 endPlayCardPhase();
             }
+            return true;
         }
+        return false;
     }
     public void printBuyDeck() {
         t.printBuyDeck();
@@ -130,8 +140,8 @@ public class Game {
     public void currentPhase() {
         if (actionPhase) System.out.printf("Actual phase: Action, Turn %d\n", t.getTurnNumber());
         if (buyPhase) System.out.printf("Actual phase: Buy, Turn %d\n", t.getTurnNumber());
-    }
-    public boolean getGameStatus() {
-        return ok;
+        if (gameEnded) {
+            System.err.println("Hra sa už skončila!");
+        }
     }
 }

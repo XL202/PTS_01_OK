@@ -8,7 +8,8 @@ public class testing {
         Game game = new Game(1,1,1,1,1,1,1,1,3, true);
         Scanner sc = new Scanner(System.in);
         String command;
-        while (game.getGameStatus()) {
+        boolean cycle = true;
+        while (cycle) {
             command = sc.next();
             switch (command) {
                 case "E" -> game.endPlayCardPhase();
@@ -35,6 +36,7 @@ public class testing {
                 case "H" -> game.printHand();
                 case "PP" -> game.printPlay();
                 case "Phase" ->game.currentPhase();
+                case "Exit" -> cycle = false;
                 default -> {
                     System.out.println("E: EndTurn");
                     System.out.println("P <int>: PlayCard <int> (číslovanie od nuly!)");
@@ -46,6 +48,7 @@ public class testing {
                     System.out.println("H: PrintHand");
                     System.out.println("PP: PrintPlay");
                     System.out.println("Phase: Current turn and phase");
+                    System.out.println("Exit: End of this program");
                 }
 
             }
