@@ -2,7 +2,7 @@ package du;
 
 import java.util.*;
 
-public class DiscardPileWithoutShuffling implements DiscardPile {
+public class DiscardPileWithoutShuffling implements DiscardPileInterface {
     LinkedList<CardInterface> cards = new LinkedList<>();
 
     public DiscardPileWithoutShuffling(LinkedList<CardInterface> cards) {

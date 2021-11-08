@@ -6,16 +6,16 @@ public class Turn {
     private TurnStatus ts;
     int turnNumber;
     final private Hand hand;
-    private final Deck deck;
-    DiscardPile discardPile;
+    private final DeckInterface deck;
+    DiscardPileInterface discardPile;
     Play play;
     LinkedList<BuyDeck> bd;
     public Turn(TurnStatus ts, LinkedList<BuyDeck> bd, boolean shuffling) {
         this.bd = bd;
         play = new Play();
-        if (shuffling) discardPile = new DiscardPileWithShuffling(new LinkedList<>());
+        if (shuffling) discardPile = new DiscardPile(new LinkedList<>());
         else discardPile = new DiscardPileWithoutShuffling(new LinkedList<>());
-        if (shuffling) deck = new DeckWithShuffling(null, discardPile);
+        if (shuffling) deck = new Deck(null, discardPile);
         else deck = new DeckWithoutShuffling(null, discardPile);
         hand = new Hand(deck);
         this.ts = ts;
@@ -45,29 +45,22 @@ public class Turn {
         return ts.getCoins();
     }
     public boolean playCard(int handIdx) {
-
-        if (ts.getActions() > 0) {
-            if (hand.getSize() > handIdx && handIdx > -1) {
-                if (hand.isActionCard(handIdx)) {
-                    evaluate_card(hand.play(handIdx));
-                    play.addCardToPlay(hand.removeCard(handIdx));
-                    ts.setActions(ts.getActions() - 1);
-                    return true;
-                }
-                else {
-                    System.err.println("Zvolená karta nie je ActionCard!");
-                    return false;
-                }
+        if (hand.getSize() > handIdx && handIdx > -1) {
+            if (hand.isActionCard(handIdx)) {
+                evaluate_card(hand.play(handIdx));
+                play.addCardToPlay(hand.removeCard(handIdx));
+                ts.setActions(ts.getActions() - 1);
+                return true;
             }
             else {
-                System.err.println("Zvolená karta nie je v ruke!");
+                System.err.println("Zvolená karta nie je ActionCard!");
                 return false;
             }
-
-
         }
-        else System.err.println("Nedostatok akcii!");
-        return false;
+        else {
+            System.err.println("Zvolená karta nie je v ruke!");
+            return false;
+        }
     }
 
     public void throwCardsToDiscardPile() {
@@ -89,7 +82,6 @@ public class Turn {
         return ts.getActions() > 0;
     }
     public boolean buyCards(int idBuyDeck) {
-
         if (idBuyDeck > 7 || idBuyDeck < 0) {
             System.err.println("Takýto buy deck neexistuje.");
             return false;

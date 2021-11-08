@@ -3,10 +3,10 @@ package du;
 import java.util.LinkedList;
 import java.util.Optional;
 
-public class DeckWithoutShuffling implements Deck{
+public class DeckWithoutShuffling implements DeckInterface {
     LinkedList<CardInterface> deck = new LinkedList<>();
-    private final DiscardPile dp;
-    public DeckWithoutShuffling(LinkedList<CardInterface> deck, DiscardPile dp) {
+    private final DiscardPileInterface dp;
+    public DeckWithoutShuffling(LinkedList<CardInterface> deck, DiscardPileInterface dp) {
         this.dp = dp;
         if (deck == null) {
             this.deck = new LinkedList<>();

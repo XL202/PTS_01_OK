@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Hand {
     LinkedList<CardInterface> cards;
-    public Hand(Deck c){
+    public Hand(DeckInterface c){
         this.cards = new LinkedList<>();
         LinkedList<CardInterface> a = c.draw(5);
         for(int i = 0; i < 5; i++) cards.add(a.get(i));
